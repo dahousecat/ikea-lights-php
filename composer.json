@@ -1,0 +1,9 @@
+{
+    "name": "dahousecat/ikea_lights_php",
+    "type": "project",
+    "require": {
+      "ext-json": "*"
+    },
+    "minimum-stability": "dev",
+    "description": ""
+}
