@@ -1,4 +1,2 @@
-ip = 192.168.86.44
-security_id = rRUskVp6iLWoN7nd
-user = IDENTITY
-auth_token = 1wRD9Xs09WrlWqN3
+ip = YOUR_HUB_IP
+security_id = YOUR_SECURITY_ID

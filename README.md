@@ -1,12 +1,58 @@
 ## Setup
 
-Coming soon
+Copy `conf.ini.example` to `conf.ini`.
+
+Add your security_id and hubs IP address. 
+
+Run:
+
+    php light.php list
+    
+This will return a list of all your bulbs and save them to `bulbs.ini`
+
+You can edit this file to replace auto generated names with your names.
+
+E.g.
+
+    kitchen = 65537
+    lounge = 65538
 
 ## Instructions
 
-Coming soon
+Example:
+
+    php light.php lounge on 50% warm
+
+First argument is bulb name from `bulb.ini`. Required.
+
+Second argument is power state. Can be on or off. Optional.
+
+Third argument is brightness level. A percentage from 0 to 100. Using a percent sign is optional. Optional.
+
+Fourth argument is the colour. Can be cold, normal or warm. Optional.
+
+The order of 2nd, 3rd and 4th arguments does not matter.
+
+You can also exclude any you don't need.
+
+For example the following are all valid:
+
+    php light.php lounge off
+    php light.php lounge 20%
+    php light.php lounge warm
+    
+## Notes
+
+If you already have a user and auth_token you can add that instead of a security id to the conf.ini like this:
+
+```
+user = YOUR_USER
+auth_token = YOUR_AUTH_TOKEN
+```
 
 ## Example coap-client commands
+
+These are what the php script is generating and running.
 
 ### Get auth token
 

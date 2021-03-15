@@ -2,6 +2,7 @@
 
 require_once 'src/LightController.php';
 require_once 'src/ArgumentParser.php';
+require_once 'src/Formatter.php';
 
 try {
     $parser = new ArgumentParser();
@@ -9,6 +10,16 @@ try {
     $controller = new LightController();
 } catch (Exception $e) {
     die('Error: ' . $e->getMessage());
+}
+
+if(isset($arguments['list'])) {
+    $bulbs = $controller->listBulbs();
+    $table = [];
+    foreach($bulbs as $name => $id) {
+        $table[] = [$name, $id];
+    }
+    echo Formatter::table($table);
+    exit;
 }
 
 $controller->setBulb($arguments['id']);

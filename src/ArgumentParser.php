@@ -19,12 +19,17 @@ class ArgumentParser
     /**
      * @var string[] Valid power states.
      */
-    private $power_states = ['on', 'off'];
+    private array $power_states = ['on', 'off'];
 
     /**
      * @var array Array of light names and their ids.
      */
-    private array $bulbs = [];
+    private array $bulbs;
+
+    /**
+     * @var string
+     */
+    protected string $bulb_file = 'bulbs.ini';
 
     /**
      * ArgumentParser constructor.
@@ -32,7 +37,7 @@ class ArgumentParser
     public function __construct() {
 
         // Try and load the bulb configuration file.
-        $this->bulbs = $this->loadIni('bulbs.ini');
+        $this->bulbs = $this->loadIni($this->bulb_file);
     }
 
     /**
@@ -44,11 +49,16 @@ class ArgumentParser
      */
     public function parse($argv) {
 
+        if($argv[1] == 'list') {
+            return ['list' => true];
+        }
+
         $this->basicValidation($argv);
 
         $output = [];
 
         $this->parseNameOrId($argv[1], $output);
+
         $this->parseCommand($argv[2], $output);
         $this->parseCommand($argv[3] ?? null, $output);
         $this->parseCommand($argv[4] ?? null, $output);

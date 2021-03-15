@@ -44,18 +44,23 @@ class CoapRequest
 
     public function send() {
 
-        $options = $this->formatOptions([
+        $args = [
             'm' => $this->method,
             'u' => $this->user,
             'k' => $this->key,
-            'e' => $this->body,
-        ]);
+        ];
+
+        if(isset($this->body)) {
+            $args['e'] = $this->body;
+        }
+
+        $options = $this->formatOptions($args);
 
         $uri = 'coaps://' . $this->uri;
 
         $command = "coap-client $options '$uri'";
 
-        echo $command . PHP_EOL;
+        //echo $command . PHP_EOL;
 
         exec($command, $output);
 
