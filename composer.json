@@ -1,9 +1,12 @@
 {
-    "name": "dahousecat/ikea_lights_php",
+    "name": "dahousecat/ikea-lights-php",
     "type": "project",
     "require": {
       "ext-json": "*"
     },
+    "autoload": {
+        "psr-4": {"IkeaLightsPhp\\": "src/"}
+    },
     "minimum-stability": "dev",
-    "description": ""
+    "description": "Control your ikea lights with a php script."
 }

@@ -1,8 +1,10 @@
 <?php
 
-require_once 'src/LightController.php';
-require_once 'src/ArgumentParser.php';
-require_once 'src/Formatter.php';
+require __DIR__ . '/vendor/autoload.php';
+
+use IkeaLightsPhp\ArgumentParser;
+use IkeaLightsPhp\Formatter;
+use IkeaLightsPhp\LightController;
 
 try {
     $parser     = new ArgumentParser();

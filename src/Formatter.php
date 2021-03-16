@@ -1,5 +1,7 @@
 <?php
 
+namespace IkeaLightsPhp;
+
 class Formatter
 {
     /**

@@ -1,7 +1,9 @@
 <?php
 
-require_once('Traits/IniTrait.php');
-require_once('CoapRequest.php');
+namespace IkeaLightsPhp;
+
+use Exception;
+use IkeaLightsPhp\Traits\IniTrait;
 
 class LightController
 {

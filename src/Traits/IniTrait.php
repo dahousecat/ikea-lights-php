@@ -1,5 +1,7 @@
 <?php
 
+namespace IkeaLightsPhp\Traits;
+
 trait IniTrait {
 
     /**

@@ -1,6 +1,9 @@
 <?php
 
-require_once('Traits/IniTrait.php');
+namespace IkeaLightsPhp;
+
+use Exception;
+use IkeaLightsPhp\Traits\IniTrait;
 
 class ArgumentParser
 {
