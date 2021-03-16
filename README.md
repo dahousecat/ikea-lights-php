@@ -7,39 +7,76 @@ Add your security_id and hubs IP address.
 Run:
 
     php light.php list
-    
-This will return a list of all your bulbs and save them to `bulbs.ini`
 
-You can edit this file to replace auto generated names with your names.
+This will return something like:
 
-E.g.
+```
+ID      NAME                 POWER   BRIGHTNESS   TYPE
+65549   Table lamp           On      40           TRADFRI bulb E14 W op/ch 400lm
+65554   Conservatory light   On      50           TRADFRI bulb E27 WS opal 1000lm
+65546   Ceiling light        On      31           TRADFRI bulb E27 WS opal 1000lm
+65548   Hall light           On      50           TRADFRI bulb E27 WS clear 950lm
+65538   Floor lamp           On      10           TRADFRI bulb E27 WS clear 950lm
+65552   Kitchen light        Off     50           TRADFRI bulb E27 WS opal 1000lm
+```
 
-    kitchen = 65537
-    lounge = 65538
+It will save the names and ids to `bulbs.ini`.
+
+Now you can refer to each bulb by the name or id.
 
 ## Instructions
 
-Example:
+### Controlling a bulb
 
-    php light.php lounge on 50% warm
+Here is an example to control a bulb:
 
-First argument is bulb name from `bulb.ini`. Required.
+    php light.php "Table lamp" on 50% warm
 
-Second argument is power state. Can be on or off. Optional.
+`php light.php` just calls the script.
 
-Third argument is brightness level. A percentage from 0 to 100. Using a percent sign is optional. Optional.
+The first argument is bulb name. 
+Can also pass bulb id.
 
-Fourth argument is the colour. Can be cold, normal or warm. Optional.
+Second argument is power state. 
+Can be on or off. 
 
-The order of 2nd, 3rd and 4th arguments does not matter.
+Third argument is brightness level. 
+A percentage from 0 to 100. 
+Using a percent sign is optional.
+
+Fourth argument is the colour. 
+Can be `cold`, `normal` or `warm`.
+
+The bulb name or id must be the first argument, but the order of
+the other arguments doesn't matter.
+
+For example this is fine: 
+
+    php light.php "Table lamp" warm on 50%
 
 You can also exclude any you don't need.
 
 For example the following are all valid:
 
-    php light.php lounge off
-    php light.php lounge 20%
-    php light.php lounge warm
+    php light.php "Table lamp" off
+    php light.php "Table lamp" 20%
+    php light.php "Table lamp" warm 50%
+
+### Getting a bulb status
+
+Run
+
+    php light.php "Table lamp" status
+
+This will return something like:
+
+```
+ID:           65549
+NAME:         Table lamp
+POWER:        On
+BRIGHTNESS:   40
+TYPE:         TRADFRI bulb E14 W op/ch 400lm
+```
     
 ## Notes
 
@@ -49,33 +86,3 @@ If you already have a user and auth_token you can add that instead of a security
 user = YOUR_USER
 auth_token = YOUR_AUTH_TOKEN
 ```
-
-## Example coap-client commands
-
-These are what the php script is generating and running.
-
-### Get auth token
-
-Request:
-
-    coap-client -m post -u "Client_identity" -k "rRUskVp6iLWoN7nd" -e '{"9090":"IDENTITY"}' "coaps://192.168.86.44:5684/15011/9063"
-    
-Response:
-
-    {"9091":"rsALiY4ffIYh5FXr","9029":"1.13.0021"}
-
-### Get list of ids
-
-Request:
-
-    coap-client -m get -u "IDENTITY" -k "1wRD9Xs09WrlWqN3" "coaps://192.168.86.44:5684/15001"
-
-Response:
-
-    //
-
-### Turn light off
-
-    coap-client -m put -u "IDENTITY" -k "1wRD9Xs09WrlWqN3" -e '{ "3311": [{ "5850": 0 }] }' "coaps://192.168.86.44:5684/15001/65546"
-   
-

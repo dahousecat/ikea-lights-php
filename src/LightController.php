@@ -128,43 +128,71 @@ class LightController
 
         $response = $request->send();
 
-        $response = array_pop($response);
-        $new_bulb_ids = (array) json_decode($response);
+        $response     = array_pop($response);
+        $new_bulb_ids = (array)json_decode($response);
 
-        return $this->updateBulbsFile($new_bulb_ids);
+        $data = [];
+        foreach($new_bulb_ids as $id) {
+            if($bulb_status = $this->status($id)) {
+                $data[] = $bulb_status;
+            }
+            $seconds = 0.5;
+            time_nanosleep(0, $seconds * 1000000);
+        }
+
+        $this->updateBulbsFile($data);
+
+        return $data;
+    }
+
+    public function status(int $id = null)
+    {
+        $uri = $this->baseUri() . '15001/' . ($id ?? $this->bulb_id);
+
+        $request = new CoapRequest([
+            'method' => 'get',
+            'user'   => $this->config['user'],
+            'key'    => $this->config['auth_token'],
+            'uri'    => $uri,
+        ]);
+
+        $response = $request->send();
+
+        $response = array_pop($response);
+        $data     = (array)json_decode($response);
+
+        // Not a light bulb.
+        if(!isset($data[3311])) {
+            return [];
+        }
+
+        $state    = (array)$data[3311][0];
+        $info     = (array)$data[3];
+
+        $response = [
+            'id'         => $data[9003],
+            'name'       => $data[9001],
+            'power'      => $state[5850] === 1 ? 'On' : 'Off',
+            'brightness' => $this->brightnessToPercent($state[5851]),
+            'type'       => $info[1],
+        ];
+
+        return $response;
 
     }
 
     /**
-     * Update or create the bulbs ini file and return an array of all bulbs.
+     * Update or create the bulbs ini file.
      *
-     * @param array $new_bulb_ids
-     * @return array
+     * @param array $data
      */
-    protected function updateBulbsFile(array $new_bulb_ids) {
-        $bulbs = $this->loadIni($this->bulb_file);
-
-        // Get highest numbered existing bulb.
-        $numbers = [];
-        foreach(array_keys($bulbs) as $name) {
-            $number = str_replace('bulb', '', $name);
-            if(is_numeric($number)) {
-                $numbers[] = $number;
-            }
+    protected function updateBulbsFile(array $data)
+    {
+        $names_and_ids = [];
+        foreach($data as $bulb) {
+            $names_and_ids[$bulb['id']] = $bulb['name'];
         }
-
-        $counter = $numbers ? max($numbers) + 1 : 1;
-
-        foreach($new_bulb_ids as $id) {
-            if(array_search($id, $bulbs) === false) {
-                $bulbs['bulb' . $counter] = $id;
-                $counter++;
-            }
-        }
-
-        $this->writeIni($this->bulb_file, $bulbs);
-
-        return $bulbs;
+        $this->writeIni($this->bulb_file, $names_and_ids);
     }
 
     /**
@@ -195,15 +223,31 @@ class LightController
     /**
      * Set the brightness.
      *
-     * @param int $value
+     * @param int $percent
      * @return $this
      */
-    public function brightness(int $value)
+    public function brightness(int $percent)
     {
-        $brightness = round(254 * ($value / 100));
+        $brightness = $this->percentToBrightness($percent);
         $payload    = '{ "' . self::BRIGHTNESS_CODE . '": ' . $brightness . ' }';
         $this->bulbRequest($payload);
         return $this;
+    }
+
+    /**
+     * @param int $brightness
+     * @return int
+     */
+    protected function brightnessToPercent(int $brightness) {
+        return intval(round(($brightness / 254) * 100));
+    }
+
+    /**
+     * @param int $percent
+     * @return int
+     */
+    protected function percentToBrightness(int $percent) {
+        return intval(round(254 * ($percent / 100)));
     }
 
     /**

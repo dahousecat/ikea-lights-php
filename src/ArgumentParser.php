@@ -74,16 +74,16 @@ class ArgumentParser
      * @throws Exception
      */
     function parseNameOrId(string $name_or_id, array &$output) {
-        if(array_key_exists($name_or_id, $this->bulbs)) {
-            $output['id'] = (int) $this->bulbs[$name_or_id];
+        if($id = array_search($name_or_id, $this->bulbs)) {
+            $output['id'] = intval($id);
         } else {
-            $output['id'] = (int) $name_or_id;
+            $output['id'] = intval($name_or_id);
         }
         $this->validateId($output['id']);
     }
 
     /**
-     * Parse a command. May be power state, brightness or colour.
+     * Parse a command. May be power state, brightness, colour or status.
      *
      * @param string|null $command
      * @param array $output
@@ -94,7 +94,10 @@ class ArgumentParser
             return;
         }
         $command = str_replace('%', '', $command);
-        if(in_array($command, $this->power_states)) {
+        if($command === 'status') {
+            $output['status'] = 'true';
+        }
+        elseif(in_array($command, $this->power_states)) {
             $output['power'] = $command == 'on';
         }
         elseif(in_array($command, $this->colours)) {
