@@ -38,7 +38,7 @@ The first argument is bulb name.
 Can also pass bulb id.
 
 Second argument is power state. 
-Can be on or off. 
+Can be `on` or `off`. 
 
 Third argument is brightness level. 
 A percentage from 0 to 100. 
@@ -64,7 +64,7 @@ For example the following are all valid:
 
 ### Getting a bulb status
 
-Run
+Run:
 
     php light.php "Table lamp" status
 

@@ -1,8 +1,8 @@
-## Example coap-client commands
+# Example coap-client commands
 
 These are what the php script is generating and running.
 
-### Get auth token
+## Get auth token
 
 Request:
 
@@ -12,7 +12,7 @@ Response:
 
     {"9091":"rsALiY4ffIYh5FXr","9029":"1.13.0021"}
 
-### Get list of ids
+## Get list of ids
 
 Request:
 
@@ -20,11 +20,20 @@ Request:
 
 Response:
 
-### Turn light off
+```
+v:1 t:CON c:GET i:d2d3 {} [ ]
+decrypt_verify(): found 24 bytes cleartext
+decrypt_verify(): found 60 bytes cleartext
+[65549,65554,65546,65537,65551,65548,65538,65552]
+```
+
+## Turn light off
+
+Request:
 
     coap-client -m put -u "IDENTITY" -k "1wRD9Xs09WrlWqN3" -e '{ "3311": [{ "5850": 0 }] }' "coaps://192.168.86.44:5684/15001/65546"
 
-### Get bulb status
+## Get bulb status
     
 Request:
     
