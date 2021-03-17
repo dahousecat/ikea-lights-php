@@ -14,6 +14,10 @@ try {
     die('Error: ' . $e->getMessage() . PHP_EOL);
 }
 
+if (isset($arguments['delay'])) {
+    sleep($arguments['delay']);
+}
+
 if (isset($arguments['list'])) {
     $data   = $controller->listBulbs();
     $header = array_map('strtoupper', array_keys($data[0]));

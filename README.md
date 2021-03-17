@@ -93,6 +93,30 @@ POWER:        On
 BRIGHTNESS:   40
 TYPE:         TRADFRI bulb E14 W op/ch 400lm
 ```
+
+## Delaying commands
+
+Passing an additional delay argument causes the script to wait before
+performing the action.
+
+For example, to turn off the light in 10 seconds:
+
+    php light.php "Table lamp" off delay=10s
+
+In 5 minutes:
+
+    php light.php "Table lamp" off delay=5m
+    
+Or 1 hour:
+
+    php light.php "Table lamp" off delay=1h
+    
+If you want to run this in the background to free up your terminal
+you can append an & to the end.
+
+For example:
+
+    php light.php "Table lamp" off delay=1h &
     
 ## Notes
 

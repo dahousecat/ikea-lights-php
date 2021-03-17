@@ -12,22 +12,22 @@ class ArgumentParser
     /**
      * @var string Example of how to use command.
      */
-    private string $example = 'Example: php light.php lounge on 50% warm' . PHP_EOL;
+    protected string $example = 'Example: php light.php lounge on 50% warm' . PHP_EOL;
 
     /**
      * @var string[] Valid colours.
      */
-    private array $colours = ['cold', 'normal', 'warm'];
+    protected array $colours = ['cold', 'normal', 'warm'];
 
     /**
      * @var string[] Valid power states.
      */
-    private array $power_states = ['on', 'off'];
+    protected array $power_states = ['on', 'off'];
 
     /**
      * @var array Array of light names and their ids.
      */
-    private array $bulbs;
+    protected array $bulbs;
 
     /**
      * @var string
@@ -109,6 +109,10 @@ class ArgumentParser
         elseif(is_numeric($command) && $command >= 0 && $command <= 100) {
             $output['brightness'] = (int) $command;
         }
+        elseif(substr($command, 0, 6) === 'delay=') {
+            $delay = str_replace('delay=', '', $command);
+            $output['delay'] = $this->delayToSeconds($delay);
+        }
         else {
             throw new Exception($command . ' is not a valid command.');
         }
@@ -120,7 +124,7 @@ class ArgumentParser
      * @param $argv
      * @throws Exception
      */
-    private function basicValidation($argv) {
+    protected function basicValidation($argv) {
         if (empty($argv[1])) {
             $error = 'Must supply light name. ' . PHP_EOL . $this->example;
             throw new Exception($error);
@@ -138,7 +142,7 @@ class ArgumentParser
      * @param string $id
      * @throws Exception
      */
-    private function validateId(string $id) {
+    protected function validateId(string $id) {
         if(substr($id, 0, 3) !== '655') {
             throw new Exception('All bulb ids must start with 655');
         }
@@ -146,6 +150,31 @@ class ArgumentParser
         if(strlen($id) !== 5) {
             throw new Exception('All bulb ids must be 5 digits long.');
         }
+    }
+
+    /**
+     * @param string $delay
+     * @return int
+     */
+    protected function delayToSeconds(string $delay): int {
+        $units_multipiers = [
+            's' => 1,
+            'm' => 60,
+            'h' => 60 * 60,
+        ];
+        $unit = substr($delay, strlen($delay) - 1);
+
+        if(!array_key_exists($unit, $units_multipiers)) {
+            return 0;
+        }
+
+        $value = substr($delay, 0, strlen($delay) - 1);
+
+        if(!is_numeric($value)) {
+            return 0;
+        }
+
+        return intval($value * $units_multipiers[$unit]);
     }
 
 }
